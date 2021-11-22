@@ -11,87 +11,72 @@ import javax.swing.event.ListSelectionEvent;
 public class LikeToTimeDishes 
 {
 	private List<Integer> preparedDishes = null;
+	private Solution solution;
 
 	public LikeToTimeDishes() {
-		
+		solution = new Solution();
 	}
 
     public static void main(String[] args) {
-    	Integer[] input = {1,2,3,4,-5,6,7,8,-9,10};
+    	Integer[] input = {-2,1};
+    	//Integer[] input = {1,2,3,4,-5,6,7,-8,9,10};
     	//Integer[] input = {-1,3,4};
+    	//Integer[] input = {-1,-9,0,5,-7};
     	//Integer[] input = {1,3,-4,4};
     	//Integer[] input = {2,-2,1,2,2,2,2};
     	LikeToTimeDishes likeToTimeDishes = new LikeToTimeDishes();
-    	int solution = likeToTimeDishes.calculateSolution(input);
-    	System.out.println("Coefficient: " + solution);
+    	Solution solution = likeToTimeDishes.calculateSolution(input);
+    	System.out.println(solution);
     }
 
-    public int calculateSolution(Integer[] input) {
+    public Solution calculateSolution(Integer[] input) {
     	preparedDishes = new ArrayList<>(Arrays.asList(input));
-    	List<Integer> newList = new ArrayList<>(Arrays.asList(input));
-    	Vector<Integer> somatorio = new Vector<>();
     	Vector<Integer> indexesToBeRemoved = new Vector<>();
     	Vector<Integer> newVector = new Vector<>();
     	int coefficient = 0;
     	int lastPositiveInteger = 0;
     	for(int i = 1; i <= input.length; i++) {
     		coefficient += i * input[i-1];
-
     		//Save last positive integer from the input array, all negative numbers from that are removed.
     		if(input[i-1] >= 0)
     			lastPositiveInteger = i;
-    		somatorio.add(coefficient);
     	}
 
-    	System.out.println("Old coefficient: " + coefficient + "\n"
-    			+ "Reorganized list: ");
-    	newList = preparedDishes.subList(0, lastPositiveInteger);
-    	System.out.println(newList);
+    	System.out.println("Old coefficient: " + coefficient);
+    	preparedDishes = preparedDishes.subList(0, lastPositiveInteger);
 
-    	//Use vector
-    	newVector = new Vector<>(newList);
+    	//Use vector in loop
+    	newVector = new Vector<>(preparedDishes);
 
-    	//What if input only has 1 negative number?
     	if(newVector.size() >= 2) {
-        	Integer ultimoNumeroPositivo = newVector.elementAt(newVector.size()-1);
-        	Integer b = ultimoNumeroPositivo;
-        	boolean markedToChange = false;
+        	Integer positiveNumbersSum = newVector.elementAt(newVector.size()-1);
         	for(int i = newVector.size()-2; i >= 0; i--) {
-        		Integer a = newVector.get(i);
-        		if(markedToChange) {
-        			markedToChange = false;
-        			ultimoNumeroPositivo = b;
-        			b = a;
-        			continue;
-        		} //se a == 0
-    			if(a > ultimoNumeroPositivo) {
-    				ultimoNumeroPositivo = a;
-    				b = a;
+        		Integer currentNumber = newVector.get(i);
+        		if(currentNumber >= 0) {
+        			positiveNumbersSum += currentNumber;
     				continue;
-    			} else if(a >= 0 && a <= b) {
-    				ultimoNumeroPositivo += b;
     			}
-    			if((i + 1) * a < 0 && Math.abs((i + 1) * a) > ultimoNumeroPositivo) { //only calculates if the number in index position is < 0.
+    			if((i + 1) * currentNumber < 0 && Math.abs((i + 1) * currentNumber) > positiveNumbersSum) { //only calculates if the number in index position is < 0.
     				indexesToBeRemoved.add(i);
-    				markedToChange = true;
     			}
         	}
-        	System.out.print("----\nIndex(es) to be removed: ");
+        	System.out.print("---------\nIndexes to be removed: ");
         	for(Integer i : indexesToBeRemoved)
         		System.out.print(i + " ");
-        	System.out.println("\n----");
-        	removeIndexesFromList(newList, indexesToBeRemoved);
-            return calculateCoefficient(newList);
+        	System.out.println("\n---------");
+        	removeIndexesFromList(preparedDishes, indexesToBeRemoved);
     	}
-    	return coefficient;
+    	return calculateCoefficient();
     }
 
-    public int calculateCoefficient(List<Integer> list) {
+    public Solution calculateCoefficient() {
     	int coefficient = 0;
-    	for(int i = 0; i < list.size(); i++) {
-    		coefficient += (i + 1) * list.get(i);
+    	for(int i = 0; i < preparedDishes.size(); i++) {
+    		coefficient += (i + 1) * preparedDishes.get(i);
     	}
-    	return coefficient;
+    	solution.setCoefficient(coefficient);
+    	solution.setPreparedDishes(preparedDishes);
+    	return solution;
     }
 
     public void removeIndexesFromList(List<Integer> list, List<Integer> indexesToBeRemoved) {
