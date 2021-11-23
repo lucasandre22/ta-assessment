@@ -19,11 +19,7 @@ public class LikeToTimeDishes
 
     public static void main(String[] args) {
     	Integer[] input = {-2,1};
-    	//Integer[] input = {1,2,3,4,-5,6,7,-8,9,10};
-    	//Integer[] input = {-1,3,4};
-    	//Integer[] input = {-1,-9,0,5,-7};
-    	//Integer[] input = {1,3,-4,4};
-    	//Integer[] input = {2,-2,1,2,2,2,2};
+
     	LikeToTimeDishes likeToTimeDishes = new LikeToTimeDishes();
     	Solution solution = likeToTimeDishes.calculateSolution(input);
     	System.out.println(solution);

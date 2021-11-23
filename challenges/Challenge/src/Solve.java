@@ -33,18 +33,25 @@ public class Solve {
 		return keysMap.get(index).indexOf(letter) + 1;
 	}
 
+	public static String getSolution(String word) {
+		char letter;
+		int mapKey;
+		StringBuilder string = new StringBuilder();
+		Solve.buildMap();
+		for(int i = 0; i < word.length(); i++) {
+			letter = word.charAt(i);
+			mapKey = getLetterMapIndex(letter);
+			string.append("#" + mapKey + "=" + getTimesToPress(mapKey, letter)+ '\n');
+		}
+		return string.toString();
+	}
+
+
 	public static void main(String[] args) {
 		String inputWord;
 		Scanner scanner = new Scanner(System.in);
-		char letter;
-		int mapKey;
-		Solve.buildMap();
 		inputWord = scanner.next();
 		scanner.close();
-		for(int i = 0; i < inputWord.length(); i++) {
-			letter = inputWord.charAt(i);
-			mapKey = getLetterMapIndex(letter);
-			System.out.println("#" + mapKey + "=" + getTimesToPress(mapKey, letter));
-		}
+		System.out.println(Solve.getSolution(inputWord));
 	}
 }
